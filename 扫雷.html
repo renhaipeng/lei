@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>扫雷</title>
+</head>
+<style>
+#sence{
+	width: 600px;
+	height: 600px;
+	background: #ccc;
+	position: absolute;
+	margin: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 1px solid black;
+}
+.block{
+	text-align: center;
+	line-height: 58px;
+	width: 58px;
+	height: 58px;
+	float: left;
+	border: 1px solid black;
+	background: #ccc;
+}  
+.biaoji::after{
+	content: '⚑';
+	color: red;
+	font-size: 30px;
+}
+.tip{
+	background: #fff;
+}
+
+.rty{
+	/*opacity: 0;	*/
+	background: url(lei.png);
+}
+</style>
+<body>
+	<div id="sence"></div>
+
+
+
+<script src="必要/jquery工程文件/jquery-1.12.0.js"></script>
+<script>
+$(function(){
+
+	$(document).on('contextmenu',false);
+	var xy2id=function(a,b){
+		return a+'-'+b;
+	}
+	var jisuan=function(x,y){
+		var num=0;
+		if($('#'+xy2id(x,y-1)).is('.lei')){num++};
+		if($('#'+xy2id(x,y+1)).is('.lei')){num++};
+	    if($('#'+xy2id(x-1,y-1)).is('.lei')){num++};
+		if($('#'+xy2id(x-1,y)).is('.lei')){num++};
+		if($('#'+xy2id(x-1,y+1)).is('.lei')){num++};
+		if($('#'+xy2id(x+1,y-1)).is('.lei')){num++};
+	    if($('#'+xy2id(x+1,y)).is('.lei')){num++};
+		if($('#'+xy2id(x+1,y+1)).is('.lei')){num++};
+		return num;
+	}
+	var zuojian=function(e){
+		if($(this).is('.biaoji')){
+			return;
+		}
+     if(e.data.lei){
+        $('.lei').addClass('rty');
+     	// alert('死了')
+     }else{
+     	return $(this).text( jisuan(e.data.x,e.data.y) ).addClass('tip')
+     }
+	}
+	var youjian=function(){
+		if($(this).is('.tip')){
+			return;
+		}
+     $(this).toggleClass('biaoji')
+     if($('.lei').length===$('.biaoji').length){
+     	if($('.lei.biaoji').length===$('.lei').length){
+     	 alert('赢')
+        }
+     }
+   
+	}
+var clickHandler=function(e){
+	// console.log(e)
+   if(e.which===1){
+     zuojian.call(this,e);
+   }else if(e.which===3){
+   	youjian.call(this,e);
+   }
+}
+	var sence=$('#sence')
+    for(i=0;i<10;i++){
+     for(j=0;j<10;j++){
+     	var isLei=Math.random()>0.9;
+      $('<div>').addClass(function(){
+      	return 'block '+(isLei? 'lei':'');   
+      }).attr('id',i+'-'+j).on('mousedown',{x:i,y:j,lei:isLei},clickHandler).appendTo(sence);
+        }
+      }
+
+})
+
+
+
+	</script>
+</body>
+</html>
